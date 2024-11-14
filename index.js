@@ -7,8 +7,10 @@ const port = 3000;
 // Enable CORS for all origins
 app.use(cors());
 
+let lastId = 5;
 const result = [
   {
+    id: 1,
     image:
       "https://s1.15min.lt/images/photos/2020/02/05/original/vilniaus-pilies-g-parduodamas-10-kv-m-ploto-butas-5e3ad52eee51a.jpg",
     city: "Vilnius",
@@ -17,6 +19,7 @@ const result = [
       "One of the smallest flats in the very city centre of Vilnius full of action and attraction.",
   },
   {
+    id: 2,
     image:
       "https://s1.15min.lt/images/photos/2020/02/05/original/vilniaus-pilies-g-parduodamas-10-kv-m-ploto-butas-5e3ad52eee51a.jpg",
     city: "Vilnius",
@@ -25,6 +28,7 @@ const result = [
       "One of the smallest flats in the very city centre of Vilnius full of action and attraction.",
   },
   {
+    id: 3,
     image:
       "https://s1.15min.lt/images/photos/2020/02/05/original/vilniaus-pilies-g-parduodamas-10-kv-m-ploto-butas-5e3ad52eee51a.jpg",
     city: "Vilnius",
@@ -33,6 +37,7 @@ const result = [
       "One of the smallest flats in the very city centre of Vilnius full of action and attraction.",
   },
   {
+    id: 4,
     image:
       "https://s1.15min.lt/images/photos/2020/02/05/original/vilniaus-pilies-g-parduodamas-10-kv-m-ploto-butas-5e3ad52eee51a.jpg",
     city: "Kaunas",
@@ -41,6 +46,7 @@ const result = [
       "One of the smallest flats in the very city centre of Vilnius full of action and attraction.",
   },
   {
+    id: 5,
     image:
       "https://s1.15min.lt/images/photos/2020/02/05/original/vilniaus-pilies-g-parduodamas-10-kv-m-ploto-butas-5e3ad52eee51a.jpg",
     city: "Klaipeda",
@@ -53,6 +59,74 @@ const result = [
 // Endpoint to return the array of objects
 app.get("/data", (req, res) => {
   res.json(result);
+});
+
+app.post("/data", (req, res) => {
+  const newEntry = req.body;
+
+  // Check if required fields are provided
+  if (
+    !newEntry.image ||
+    !newEntry.city ||
+    !newEntry.price ||
+    !newEntry.description
+  ) {
+    return res
+      .status(400)
+      .json({
+        error: "All fields (image, city, price, description) are required.",
+      });
+  }
+  lastId = lastId + 1;
+  // Add the new entry to the data array
+  data.push({ id: lastId, ...newEntry });
+
+  // Respond with the updated data array
+  res.status(201).json(data);
+});
+
+// DELETE endpoint to delete an element by id
+app.delete("/data/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const index = data.findIndex((item) => item.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ error: "Item not found." });
+  }
+
+  // Remove the item from the data array
+  data.splice(index, 1);
+  res.json({ message: "Item deleted successfully", data });
+});
+
+// PUT endpoint to update an element by id
+app.put("/data/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const index = data.findIndex((item) => item.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ error: "Item not found." });
+  }
+
+  const updatedEntry = req.body;
+
+  // Check if required fields are provided
+  if (
+    !updatedEntry.image ||
+    !updatedEntry.city ||
+    !updatedEntry.price ||
+    !updatedEntry.description
+  ) {
+    return res
+      .status(400)
+      .json({
+        error: "All fields (image, city, price, description) are required.",
+      });
+  }
+
+  // Update the entry with new data
+  data[index] = { id, ...updatedEntry };
+  res.json({ message: "Item updated successfully", data });
 });
 
 // Start the server
