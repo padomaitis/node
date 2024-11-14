@@ -93,7 +93,7 @@ app.delete("/data/:id", (req, res) => {
   }
 
   // Remove the item from the data array
-  v.splice(index, 1);
+  result.splice(index, 1);
   result.json({ message: "Item deleted successfully", result });
 });
 
