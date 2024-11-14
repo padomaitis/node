@@ -71,38 +71,36 @@ app.post("/data", (req, res) => {
     !newEntry.price ||
     !newEntry.description
   ) {
-    return res
-      .status(400)
-      .json({
-        error: "All fields (image, city, price, description) are required.",
-      });
+    return res.status(400).json({
+      error: "All fields (image, city, price, description) are required.",
+    });
   }
   lastId = lastId + 1;
   // Add the new entry to the data array
-  data.push({ id: lastId, ...newEntry });
+  result.push({ id: lastId, ...newEntry });
 
   // Respond with the updated data array
-  res.status(201).json(data);
+  res.status(201).json(result);
 });
 
 // DELETE endpoint to delete an element by id
 app.delete("/data/:id", (req, res) => {
   const id = parseInt(req.params.id);
-  const index = data.findIndex((item) => item.id === id);
+  const index = result.findIndex((item) => item.id === id);
 
   if (index === -1) {
     return res.status(404).json({ error: "Item not found." });
   }
 
   // Remove the item from the data array
-  data.splice(index, 1);
-  res.json({ message: "Item deleted successfully", data });
+  v.splice(index, 1);
+  result.json({ message: "Item deleted successfully", result });
 });
 
 // PUT endpoint to update an element by id
 app.put("/data/:id", (req, res) => {
   const id = parseInt(req.params.id);
-  const index = data.findIndex((item) => item.id === id);
+  const index = result.findIndex((item) => item.id === id);
 
   if (index === -1) {
     return res.status(404).json({ error: "Item not found." });
@@ -117,16 +115,14 @@ app.put("/data/:id", (req, res) => {
     !updatedEntry.price ||
     !updatedEntry.description
   ) {
-    return res
-      .status(400)
-      .json({
-        error: "All fields (image, city, price, description) are required.",
-      });
+    return res.status(400).json({
+      error: "All fields (image, city, price, description) are required.",
+    });
   }
 
   // Update the entry with new data
-  data[index] = { id, ...updatedEntry };
-  res.json({ message: "Item updated successfully", data });
+  result[index] = { id, ...updatedEntry };
+  res.json({ message: "Item updated successfully", result });
 });
 
 // Start the server
