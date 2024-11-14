@@ -3,7 +3,7 @@ const cors = require("cors"); // Import cors middleware
 
 const app = express();
 const port = 3000;
-
+app.use(express.json());
 // Enable CORS for all origins
 app.use(cors());
 
@@ -94,7 +94,7 @@ app.delete("/data/:id", (req, res) => {
 
   // Remove the item from the data array
   result.splice(index, 1);
-  result.json({ message: "Item deleted successfully", result });
+  res.json({ message: "Item deleted successfully", result });
 });
 
 // PUT endpoint to update an element by id
@@ -108,20 +108,8 @@ app.put("/data/:id", (req, res) => {
 
   const updatedEntry = req.body;
 
-  // Check if required fields are provided
-  if (
-    !updatedEntry.image ||
-    !updatedEntry.city ||
-    !updatedEntry.price ||
-    !updatedEntry.description
-  ) {
-    return res.status(400).json({
-      error: "All fields (image, city, price, description) are required.",
-    });
-  }
-
   // Update the entry with new data
-  result[index] = { id, ...updatedEntry };
+  result[index] = { id, ...result[index], ...updatedEntry };
   res.json({ message: "Item updated successfully", result });
 });
 
